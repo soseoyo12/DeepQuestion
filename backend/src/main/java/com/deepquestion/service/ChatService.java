@@ -2,7 +2,10 @@ package com.deepquestion.service;
 
 import com.deepquestion.dto.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -10,6 +13,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
+import jakarta.annotation.PostConstruct;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.List;
 import java.util.UUID;
@@ -19,6 +25,9 @@ import java.util.UUID;
 public class ChatService {
     
     private final WebClient webClient;
+    
+    @Autowired
+    private ResourceLoader resourceLoader;
     
     @Value("${ai.service}")
     private String aiService;
@@ -44,13 +53,24 @@ public class ChatService {
     @Value("${ai.claude.max-tokens}")
     private Integer claudeMaxTokens;
     
-    @Value("${ai.system-prompt}")
     private String systemPrompt;
     
     public ChatService(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder
                 .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(10 * 1024 * 1024))
                 .build();
+    }
+    
+    @PostConstruct
+    public void loadSystemPrompt() {
+        try {
+            Resource resource = resourceLoader.getResource("classpath:system-prompt.txt");
+            this.systemPrompt = new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+            log.info("System prompt loaded successfully. Length: {} characters", systemPrompt.length());
+        } catch (IOException e) {
+            log.error("Failed to load system prompt from file", e);
+            this.systemPrompt = "You are a helpful AI assistant.";
+        }
     }
     
     public Mono<ChatResponse> processMessage(ChatRequest request) {
