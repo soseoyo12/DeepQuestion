@@ -12,40 +12,47 @@ claude.md 파일의 요구사항을 바탕으로 구현된 AI 채팅 웹 서비�
 - **세션 관리**: 대화 세션별 관리
 - **스토리텔링 AI**: 사용자의 인생 이야기를 듣고 성장 스토리로 만들어주는 전문 AI
 
-## 🛠 설치 및 실행
+## 🛠️ 설치 및 실행
 
-### 1. 백엔드 실행 (Spring Boot)
+Spring Boot 백엔드가 프론트엔드 파일을 함께 제공하므로, 별도의 웹 서버가 필요 없습니다. 아래 단계에 따라 간단하게 전체 애플리케이션을 실행할 수 있습니다.
 
-```bash
-# 백엔드 디렉토리로 이동
-cd backend
+1.  **백엔드 디렉토리로 이동**
+    ```bash
+    cd backend
+    ```
 
-# Maven으로 의존성 설치 및 빌드
-mvn clean install
+2.  **Maven으로 의존성 설치 및 빌드**
+    ```bash
+    mvn clean install
+    ```
 
-# 환경 변수 설정 (OpenAI 사용 시)
-export OPENAI_API_KEY=your-openai-api-key-here
+3.  **API 키 환경 변수 설정 (필요시)**
+    - **OpenAI 사용 시:**
+      ```bash
+      # macOS/Linux
+      export OPENAI_API_KEY="sk-your-openai-key"
 
-# 또는 Claude 사용 시
-export CLAUDE_API_KEY=your-claude-api-key-here
+      # Windows
+      set OPENAI_API_KEY=sk-your-openai-key
+      ```
+    - **Claude 사용 시:**
+      ```bash
+      # macOS/Linux
+      export CLAUDE_API_KEY="sk-ant-your-claude-key"
 
-# 애플리케이션 실행
-mvn spring-boot:run
-```
+      # Windows
+      set CLAUDE_API_KEY=sk-ant-your-claude-key
+      ```
+    > **Note:** API 키를 설정하지 않으면 데모 모드로 실행됩니다.
 
-### 2. 프론트엔드 실행
+4.  **애플리케이션 실행**
+    ```bash
+    mvn spring-boot:run
+    ```
 
-```bash
-# 프로젝트 루트 디렉토리에서
-# 웹 서버 실행 (Python 예시)
-python -m http.server 3000
-
-# 또는 Node.js 서버
-npx http-server -p 3000
-
-# 브라우저에서 접속
-open http://localhost:3000
-```
+5.  **브라우저 접속**
+    애플리케이션이 실행되면, 웹 브라우저를 열고 아래 주소로 접속하세요.
+    - `http://localhost:8080`
 
 ## 📁 프로젝트 구조
 
@@ -116,10 +123,9 @@ set CLAUDE_API_KEY=sk-ant-your-claude-key
 
 ## 🎯 사용법
 
-1. **백엔드 서버 실행**: `mvn spring-boot:run`
-2. **프론트엔드 서버 실행**: 웹 서버로 index.html 제공
-3. **브라우저 접속**: http://localhost:3000
-4. **채팅 시작**: 텍스트 입력 또는 🎤 버튼으로 음성 입력
+1. **애플리케이션 실행**: `backend` 디렉토리에서 `mvn spring-boot:run` 명령을 실행합니다.
+2. **브라우저 접속**: `http://localhost:8080` 주소로 접속합니다.
+3. **채팅 시작**: 텍스트를 입력하거나 🎤 버튼을 눌러 음성으로 대화를 시작합니다.
 
 ## 🔧 개발 모드
 

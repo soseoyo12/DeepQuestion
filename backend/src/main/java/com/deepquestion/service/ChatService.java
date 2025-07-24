@@ -47,10 +47,12 @@ public class ChatService {
     @Value("${ai.system-prompt}")
     private String systemPrompt;
     
-    public ChatService(WebClient.Builder webClientBuilder) {
+    public ChatService(WebClient.Builder webClientBuilder, @Value("${ai.system-prompt}") String systemPrompt) {
         this.webClient = webClientBuilder
                 .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(10 * 1024 * 1024))
                 .build();
+        this.systemPrompt = systemPrompt; // 생성자에서 주입받아 할당
+        log.info("Loaded System Prompt: {}", this.systemPrompt); // 로드된 프롬프트 로깅
     }
     
     public Mono<ChatResponse> processMessage(ChatRequest request) {
@@ -61,21 +63,31 @@ public class ChatService {
         if ("claude".equalsIgnoreCase(aiService)) {
             return callClaudeAPI(request.getMessage(), sessionId);
         } else {
-            return callOpenAIAPI(request.getMessage(), sessionId);
+            return callOpenAIAPI(request, sessionId);
         }
     }
     
-    private Mono<ChatResponse> callOpenAIAPI(String message, String sessionId) {
+    private Mono<ChatResponse> callOpenAIAPI(ChatRequest request, String sessionId) {
         OpenAIRequest.Message systemMessage = new OpenAIRequest.Message("system", systemPrompt);
-        OpenAIRequest.Message userMessage = new OpenAIRequest.Message("user", message);
         
+        List<OpenAIRequest.Message> messages = new java.util.ArrayList<>();
+        messages.add(systemMessage);
+        if (request.getMessageHistory() != null) {
+            for (OpenAIRequest.Message msg : request.getMessageHistory()) {
+                messages.add(new OpenAIRequest.Message(msg.getRole(), msg.getContent()));
+            }
+        }
+        messages.add(new OpenAIRequest.Message("user", request.getMessage()));
+
         OpenAIRequest openAIRequest = new OpenAIRequest(
                 openaiModel,
-                List.of(systemMessage, userMessage),
+                messages,
                 openaiMaxTokens,
                 openaiTemperature
         );
         
+        log.debug("Sending OpenAI request: {}", openAIRequest);
+
         return webClient.post()
                 .uri("https://api.openai.com/v1/chat/completions")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + openaiApiKey)

@@ -196,8 +196,8 @@ class DeepQuestionChat {
             this.sessionId = this.generateSessionId();
         }
         
-        // 메시지 히스토리에 추가
-        this.messageHistory.push({ role: 'user', content: message });
+        // 메시지 히스토리에 추가 (현재 메시지는 백엔드에서 처리)
+        // this.messageHistory.push({ role: 'user', content: message }); // 이 줄을 제거
         
         // 메시지를 백엔드로 전송
         try {
@@ -209,7 +209,7 @@ class DeepQuestionChat {
                 body: JSON.stringify({
                     message: message,
                     sessionId: this.sessionId,
-                    messageHistory: this.messageHistory
+                    messageHistory: this.messageHistory.map(msg => ({ role: msg.role, content: msg.content })) // role과 content를 명확히 지정
                 })
             });
             
