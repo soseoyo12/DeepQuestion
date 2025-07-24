@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepQuestion - AI 채팅 서비스</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="background-decoration">
+        <div class="bg-circle bg-circle-1"></div>
+        <div class="bg-circle bg-circle-2"></div>
+        <div class="bg-circle bg-circle-3"></div>
+        <div class="floating-particles">
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="header">
+            <div class="header-icon">
+                <div class="ai-avatar">
+                    <div class="avatar-gradient"></div>
+                    <span class="avatar-emoji">🤖</span>
+                </div>
+            </div>
+            <div class="header-content">
+                <h1>DeepQuestion</h1>
+                <p>특정 프롬프트 지침을 바탕으로 답하는 AI 채팅 서비스</p>
+            </div>
+            <div class="status-indicator">
+                <div class="status-dot"></div>
+                <span>온라인</span>
+            </div>
+        </div>
+        
+        <div class="chat-container">
+            <div class="chat-messages" id="chatMessages">
+            </div>
+        </div>
+        
+        <div class="input-container">
+            <div class="input-wrapper">
+                <div class="input-field">
+                    <textarea 
+                        id="messageInput" 
+                        placeholder="메시지를 입력하세요..." 
+                        rows="1"
+                        maxlength="1000">
+                    </textarea>
+                </div>
+                <div class="input-actions">
+                    <button id="voiceButton" class="action-btn voice-btn" title="음성 입력">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 1C10.34 1 9 2.34 9 4V12C9 13.66 10.34 15 12 15C13.66 15 15 13.66 15 12V4C15 2.34 13.66 1 12 1Z" fill="currentColor"/>
+                            <path d="M19 10V12C19 15.87 15.87 19 12 19C8.13 19 5 15.87 5 12V10H7V12C7 14.76 9.24 17 12 17C14.76 17 17 14.76 17 12V10H19Z" fill="currentColor"/>
+                            <path d="M10 21H14V23H10V21Z" fill="currentColor"/>
+                        </svg>
+                    </button>
+                    <button id="sendButton" class="action-btn send-btn" title="전송">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M2.01 21L23 12L2.01 3L2 10L17 12L2 14L2.01 21Z" fill="currentColor"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="loading-animation">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+            <div class="loading-text">AI가 답변을 생성하고 있습니다...</div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
