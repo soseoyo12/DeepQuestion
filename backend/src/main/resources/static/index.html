@@ -3,88 +3,760 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DeepQuestion - AI 채팅 서비스</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>DeepQuestion - AI Chat</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary-color: #1e40af; /* 깊은 파랑 */
+            --primary-light: #3b82f6; /* 밝은 파랑 */
+            --primary-dark: #1e3a8a; /* 더 어두운 파랑 */
+            --secondary-color: #00ff88; /* 형광 초록 */
+            --accent-color: #06d6a0; /* 터키석 초록 */
+            
+            --background-primary: #0a0f1c; /* 매우 어두운 남색 */
+            --background-secondary: #1a2332; /* 어두운 남색 */
+            --background-tertiary: #2a3441; /* 중간 남색 */
+            --background-quaternary: #374a5c; /* 밝은 남색 */
+            
+            --glass-subtle: rgba(30, 64, 175, 0.03);
+            --glass-light: rgba(30, 64, 175, 0.05);
+            --glass-medium: rgba(30, 64, 175, 0.08);
+            --glass-strong: rgba(30, 64, 175, 0.12);
+            --glass-strongest: rgba(30, 64, 175, 0.18);
+            
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #64748b;
+            --text-disabled: #475569;
+            
+            --border-glass: rgba(59, 130, 246, 0.08);
+            --border-subtle: rgba(59, 130, 246, 0.12);
+            --border-strong: rgba(59, 130, 246, 0.20);
+            
+            --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.5);
+            --shadow-glass-strong: 0 25px 50px rgba(0, 0, 0, 0.7);
+            --shadow-inset-light: inset 0 1px 0 rgba(59, 130, 246, 0.08);
+            --shadow-inset-dark: inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+            
+            --glow-primary: 0 0 30px rgba(30, 64, 175, 0.4);
+            --glow-secondary: 0 0 25px rgba(0, 255, 136, 0.6);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: var(--background-primary);
+            background-image: 
+                radial-gradient(circle at 15% 85%, rgba(30, 64, 175, 0.12) 0px, transparent 60%),
+                radial-gradient(circle at 85% 15%, rgba(59, 130, 246, 0.08) 0px, transparent 60%),
+                radial-gradient(circle at 50% 50%, rgba(0, 255, 136, 0.06) 0px, transparent 70%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            font-size: 14px;
+            font-weight: 400;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .chat-container {
+            background: var(--glass-medium);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-radius: 28px;
+            padding: 32px;
+            box-shadow: 
+                var(--shadow-glass-strong), 
+                var(--shadow-inset-light),
+                var(--glow-primary);
+            border: 1px solid var(--border-glass);
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 1200px;
+            height: calc(100vh - 40px);
+            box-sizing: border-box;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chat-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, 
+                transparent, 
+                var(--border-strong), 
+                transparent);
+            opacity: 0.7;
+        }
+
+        .chat-container::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(139, 92, 246, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(6, 182, 212, 0.02) 0%, transparent 50%);
+            border-radius: inherit;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        h1 {
+            text-align: center;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 32px;
+            font-size: 2.4rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            position: relative;
+            text-shadow: 0 0 30px rgba(139, 92, 246, 0.3);
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                transparent,
+                var(--primary-color),
+                var(--accent-color),
+                transparent);
+            border-radius: 1px;
+            opacity: 0.6;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            background: var(--surface-glass);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-subtle);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            scroll-behavior: smooth;
+            min-height: 0;
+            height: calc(100vh - 250px);
+            position: relative;
+            box-shadow: var(--shadow-md);
+        }
+
+        .chat-messages::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.1) 0%, transparent 50%);
+            border-radius: 16px;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 3px;
+            opacity: 0.6;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb:hover {
+            opacity: 1;
+        }
+
+        .message {
+            max-width: 75%;
+            padding: 18px 22px;
+            border-radius: 20px;
+            word-wrap: break-word;
+            font-size: 15px;
+            line-height: 1.6;
+            position: relative;
+            animation: messageSlideIn 0.4s ease-out;
+        }
+
+        @keyframes messageSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .user-message {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            color: var(--text-primary);
+            align-self: flex-end;
+            border-bottom-right-radius: 8px;
+            box-shadow: var(--shadow-lg), var(--glow-primary);
+            font-weight: 500;
+        }
+
+        .user-message::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: inherit;
+            pointer-events: none;
+        }
+
+        .ai-message {
+            background: var(--surface-elevated);
+            color: var(--text-primary);
+            align-self: flex-start;
+            border-bottom-left-radius: 8px;
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-md);
+        }
+
+
+        .ai-message p {
+            margin: 0.5em 0;
+            color: var(--text-secondary);
+        }
+
+        .ai-message p:first-child {
+            margin-top: 0;
+        }
+
+        .ai-message p:last-child {
+            margin-bottom: 0;
+        }
+
+        .ai-message h1, .ai-message h2, .ai-message h3, .ai-message h4, .ai-message h5, .ai-message h6 {
+            margin: 1.2em 0 0.6em 0;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 600;
+        }
+
+        .ai-message h1:first-child,
+        .ai-message h2:first-child,
+        .ai-message h3:first-child,
+        .ai-message h4:first-child {
+            margin-top: 0;
+        }
+
+        .ai-message h1 { font-size: 1.5em; }
+        .ai-message h2 { font-size: 1.3em; }
+        .ai-message h3 { font-size: 1.2em; }
+        .ai-message h4 { font-size: 1.1em; }
+
+        .ai-message ul, .ai-message ol {
+            margin: 0.8em 0;
+            padding-left: 20px;
+        }
+
+        .ai-message li {
+            margin-bottom: 0.3em;
+            color: var(--text-secondary);
+        }
+
+        .ai-message pre {
+            background: var(--background-secondary);
+            padding: 16px;
+            border-radius: 12px;
+            overflow-x: auto;
+            border: 1px solid var(--border-subtle);
+            margin: 1em 0;
+            font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .ai-message code {
+            font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+            background: var(--background-secondary);
+            color: var(--accent-color);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .ai-message pre code {
+            background: transparent;
+            padding: 0;
+            color: var(--text-secondary);
+            border: none;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 16px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-glass);
+            align-items: flex-end;
+            position: relative;
+        }
+
+        .input-group::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, 
+                transparent,
+                var(--border-strong),
+                transparent);
+            opacity: 0.5;
+        }
+
+        textarea {
+            flex: 1;
+            padding: 18px 22px;
+            border: 1px solid var(--border-glass);
+            border-radius: 16px;
+            resize: none;
+            min-height: 28px;
+            max-height: 120px;
+            font-size: 15px;
+            line-height: 1.5;
+            transition: all 0.3s ease;
+            background: var(--glass-medium);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            color: var(--text-primary);
+            font-family: inherit;
+            box-shadow: var(--shadow-inset-light);
+        }
+
+        textarea:focus {
+            border-color: var(--primary-color);
+            box-shadow: 
+                0 0 0 3px rgba(139, 92, 246, 0.2),
+                var(--shadow-glass),
+                var(--glow-primary);
+            outline: none;
+            background: var(--glass-strong);
+        }
+
+        textarea::placeholder {
+            color: var(--text-muted);
+        }
+
+        button {
+            padding: 18px 32px;
+            background: var(--glass-strong);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            color: var(--text-primary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            box-shadow: 
+                var(--shadow-glass),
+                var(--shadow-inset-light),
+                var(--glow-primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                rgba(139, 92, 246, 0.3),
+                rgba(249, 115, 22, 0.2));
+            border-radius: inherit;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        button::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: rotate(45deg) translate(-100%, -100%);
+            transition: transform 0.6s ease;
+            pointer-events: none;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                var(--shadow-glass-strong),
+                var(--shadow-inset-light),
+                var(--glow-primary);
+            border-color: var(--primary-color);
+        }
+
+        button:hover::after {
+            transform: rotate(45deg) translate(0, 0);
+        }
+
+        button:active {
+            transform: translateY(0);
+            box-shadow: 
+                var(--shadow-glass),
+                var(--shadow-inset-light);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        button:disabled::after {
+            display: none;
+        }
+
+        /* 타이핑 인디케이터 */
+        .typing-indicator {
+            background: var(--glass-medium);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            color: var(--text-primary);
+            align-self: flex-start;
+            border-bottom-left-radius: 8px;
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-glass);
+            max-width: 75%;
+            padding: 18px 22px;
+            border-radius: 20px;
+            font-size: 15px;
+            line-height: 1.6;
+            position: relative;
+            animation: messageSlideIn 0.4s ease-out;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+
+        .typing-dots span {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            animation: typingBounce 1.4s infinite ease-in-out;
+            opacity: 0.4;
+        }
+
+        .typing-dots span:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .typing-dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typingBounce {
+            0%, 60%, 100% {
+                transform: translateY(0);
+                opacity: 0.4;
+            }
+            30% {
+                transform: translateY(-10px);
+                opacity: 1;
+            }
+        }
+
+        .typing-text {
+            color: var(--text-muted);
+            font-style: italic;
+            font-size: 14px;
+        }
+
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            body {
+                padding: 16px;
+                font-size: 14px;
+            }
+            
+            .chat-container {
+                padding: 20px;
+                height: calc(100vh - 32px);
+                border-radius: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+                margin-bottom: 20px;
+            }
+            
+            .chat-messages {
+                padding: 16px;
+                margin-bottom: 16px;
+                gap: 12px;
+            }
+            
+            .message {
+                max-width: 90%;
+                padding: 14px 16px;
+                font-size: 14px;
+                border-radius: 16px;
+            }
+            
+            .user-message {
+                border-bottom-right-radius: 6px;
+            }
+            
+            .ai-message {
+                border-bottom-left-radius: 6px;
+            }
+            
+            .input-group {
+                flex-direction: column;
+                gap: 12px;
+                padding-top: 16px;
+            }
+            
+            textarea {
+                min-height: 44px;
+                font-size: 16px; /* iOS에서 줌 방지 */
+                padding: 14px 16px;
+                border-radius: 12px;
+            }
+            
+            button {
+                width: 100%;
+                padding: 16px 20px;
+                font-size: 16px;
+                border-radius: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .chat-container {
+                padding: 16px;
+                border-radius: 16px;
+            }
+            
+            h1 {
+                font-size: 1.75rem;
+            }
+            
+            .message {
+                max-width: 95%;
+                padding: 12px 14px;
+            }
+        }
+    
+    </style>
 </head>
 <body>
-    <div class="background-decoration">
-        <div class="bg-circle bg-circle-1"></div>
-        <div class="bg-circle bg-circle-2"></div>
-        <div class="bg-circle bg-circle-3"></div>
-        <div class="floating-particles">
-            <div class="particle"></div>
-            <div class="particle"></div>
-            <div class="particle"></div>
-            <div class="particle"></div>
-            <div class="particle"></div>
-        </div>
-    </div>
-    
-    <div class="container">
-        <div class="header">
-            <div class="header-icon">
-                <div class="ai-avatar">
-                    <div class="avatar-gradient"></div>
-                    <span class="avatar-emoji">🤖</span>
-                </div>
-            </div>
-            <div class="header-content">
-                <h1>DeepQuestion</h1>
-                <p>특정 프롬프트 지침을 바탕으로 답하는 AI 채팅 서비스</p>
-            </div>
-            <div class="status-indicator">
-                <div class="status-dot"></div>
-                <span>온라인</span>
-            </div>
+    <div class="chat-container">
+        <h1>DeepQuestion - AI Chat</h1>
+        
+        <div class="chat-messages" id="chatMessages">
+            <!-- 초기 메시지는 JavaScript에서 추가 -->
         </div>
         
-        <div class="chat-container">
-            <div class="chat-messages" id="chatMessages">
-            </div>
+        <div class="input-group">
+            <textarea id="messageInput" placeholder="메시지를 입력하세요..."></textarea>
+            <button onclick="sendMessage()">전송</button>
         </div>
+    </div>
+
+    <script>
+        // 초기 메시지 설정
+        const initialMessage = `안녕 성용님! 반가워요! 저는 성용님의 빛나는 성장 스토리를 함께 만들어나갈 스토리텔링 전문 AI 조수예요. 똑똑하고 센스 있는 친구처럼 성용님 옆에서 든든하게 도와드릴 테니, 앞으로 잘 부탁드려요! 
+
+성용님의 이야기를 듣고, 그 속에 숨겨진 멋진 강점과 잠재력을 발견해서 세상에 하나뿐인 '성장 스토리' 초안을 함께 완성하는 게 우리의 목표예요. 너무 거창하게 생각하지 않아도 괜찮아요. 제가 옆에서 차근차근 질문 던져드릴 테니, 편하게 수다 떨듯이 이야기해주시면 돼요! ✍️✨
+
+자, 그럼 우리의 멋진 여정을 시작해볼까요? 첫 시작은 아주 어린 시절부터 천천히 돌아보는 게 어떨까요? 너무 부담 갖지 말고, 아래 질문들 중에서 지금 가장 마음이 가는 질문 하나에 대한 이야기부터 들려주세요! 최대한 자연스럽고 편하게요! 
+
+---
+
+### 유치원~초등학교 저학년 시절
+
+*   그 시절 성용님은 어떤 아이였나요? (예: 호기심이 많았는지, 리더였는지, 장난꾸러기였는지)
+*   평소에 좋아하던 놀이나 활동은 뭐였어요? (예: 블록 쌓기, 자전거, 만화 그리기 등)
+*   기억나는 특별한 경험이 있나요? (예: 어른들을 따라 뭘 고쳤다거나, 친구 문제를 해결해줬던 일 등)
+
+### ‍ 초등학교 고학년~중학교 시절
+
+*   이 시기에는 어떤 것에 몰입했었나요? (예: 태권도, 공부, 게임, 그림, 리더 활동 등)
+*   성용님이 스스로 문제를 해결했던 경험이 있다면? (예: 고장 난 컴퓨터 고치기, 친구 도와주기, 학급 임원 역할 등)
+*   어떤 계기로 "나 이거 진짜 잘할지도?"라고 느낀 적이 있었나요?
+
+---
+
+일단 한 가지 이야기만 먼저 꺼내주셔도 좋아요. 제가 그걸 듣고 더 자세히 물어보면서, 하나씩 차근차근 성장의 궤적을 정리해드릴게요! ️
+
+그럼… 성용님의 유년 시절 중 "음, 이건 좀 특별했던 것 같다!" 싶은 장면 하나만 이야기해주실래요? 어떤 이야기든 좋아요! 기대하고 있을게요! ✨`
+
+        let typingIndicatorElement = null;
+
+        function showTypingIndicator() {
+            const chatMessages = document.getElementById('chatMessages');
+            
+            // 이미 표시 중이면 중복 방지
+            if (typingIndicatorElement) return;
+            
+            typingIndicatorElement = document.createElement('div');
+            typingIndicatorElement.className = 'typing-indicator';
+            typingIndicatorElement.innerHTML = `
+                <span class="typing-text">답변을 생각하고 있어요</span>
+                <div class="typing-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            `;
+            
+            chatMessages.appendChild(typingIndicatorElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            if (typingIndicatorElement) {
+                typingIndicatorElement.remove();
+                typingIndicatorElement = null;
+            }
+        }
+
+        async function sendMessage() {
+            const messageInput = document.getElementById('messageInput');
+            const chatMessages = document.getElementById('chatMessages');
+            const sendButton = document.querySelector('button');
+            const message = messageInput.value.trim();
+            
+            if (!message) return;
+            
+            // 사용자 메시지 표시
+            addMessage(message, 'user-message');
+            messageInput.value = '';
+            
+            // 버튼 비활성화 및 타이핑 인디케이터 표시
+            sendButton.disabled = true;
+            showTypingIndicator();
+            
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: message
+                    })
+                });
+                
+                const data = await response.json();
+                
+                // 타이핑 인디케이터 제거
+                removeTypingIndicator();
+                
+                if (data.success) {
+                    addMessage(data.response, 'ai-message');
+                } else {
+                    addMessage('오류: ' + data.error, 'ai-message');
+                }
+            } catch (error) {
+                // 타이핑 인디케이터 제거
+                removeTypingIndicator();
+                addMessage('네트워크 오류: ' + error.message, 'ai-message');
+            } finally {
+                // 버튼 다시 활성화
+                sendButton.disabled = false;
+            }
+        }
         
-        <div class="input-container">
-            <div class="input-wrapper">
-                <div class="input-field">
-                    <textarea 
-                        id="messageInput" 
-                        placeholder="메시지를 입력하세요..." 
-                        rows="1"
-                        maxlength="1000">
-                    </textarea>
-                </div>
-                <div class="input-actions">
-                    <button id="voiceButton" class="action-btn voice-btn" title="음성 입력">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 1C10.34 1 9 2.34 9 4V12C9 13.66 10.34 15 12 15C13.66 15 15 13.66 15 12V4C15 2.34 13.66 1 12 1Z" fill="currentColor"/>
-                            <path d="M19 10V12C19 15.87 15.87 19 12 19C8.13 19 5 15.87 5 12V10H7V12C7 14.76 9.24 17 12 17C14.76 17 17 14.76 17 12V10H19Z" fill="currentColor"/>
-                            <path d="M10 21H14V23H10V21Z" fill="currentColor"/>
-                        </svg>
-                    </button>
-                    <button id="sendButton" class="action-btn send-btn" title="전송">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M2.01 21L23 12L2.01 3L2 10L17 12L2 14L2.01 21Z" fill="currentColor"/>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="loading-overlay" id="loadingOverlay">
-        <div class="loading-content">
-            <div class="loading-animation">
-                <div class="dot"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
-            </div>
-            <div class="loading-text">AI가 답변을 생성하고 있습니다...</div>
-        </div>
-    </div>
-    
-    <script src="script.js"></script>
+        function addMessage(text, className) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message ' + className;
+            
+            // AI 메시지인 경우 마크다운 렌더링 적용
+            if (className === 'ai-message') {
+                messageDiv.innerHTML = marked.parse(text);
+            } else {
+                messageDiv.textContent = text;
+            }
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        // 페이지 로드 시 초기 메시지 추가
+        window.onload = function() {
+            addMessage(initialMessage, 'ai-message');
+        };
+
+        // Enter 키로 전송
+        document.getElementById('messageInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+    </script>
 </body>
 </html>

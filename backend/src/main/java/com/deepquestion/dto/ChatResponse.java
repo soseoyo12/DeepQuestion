@@ -1,27 +1,43 @@
 package com.deepquestion.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
-
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class ChatResponse {
-    
-    private String message;
-    private String sessionId;
-    private LocalDateTime timestamp;
+    private String response;
     private boolean success;
     private String error;
     
-    public static ChatResponse success(String message, String sessionId) {
-        return new ChatResponse(message, sessionId, LocalDateTime.now(), true, null);
+    public ChatResponse() {}
+    
+    public ChatResponse(String response, boolean success) {
+        this.response = response;
+        this.success = success;
     }
     
-    public static ChatResponse error(String error, String sessionId) {
-        return new ChatResponse(null, sessionId, LocalDateTime.now(), false, error);
+    public ChatResponse(String error) {
+        this.error = error;
+        this.success = false;
+    }
+    
+    public String getResponse() {
+        return response;
+    }
+    
+    public void setResponse(String response) {
+        this.response = response;
+    }
+    
+    public boolean isSuccess() {
+        return success;
+    }
+    
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
+    
+    public String getError() {
+        return error;
+    }
+    
+    public void setError(String error) {
+        this.error = error;
     }
 }
