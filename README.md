@@ -1,200 +1,149 @@
-# DeepQuestion - AI 채팅 서비스 🤖
+# DeepQuestion - AI 개인 성장 스토리 어시스턴트 🌱
 
-claude.md 파일의 요구사항을 바탕으로 구현된 AI 채팅 웹 서비스입니다. 텍스트와 음성 입력을 모두 지원하며, Spring Boot 백엔드와 연동되어 실제 AI API(OpenAI GPT 또는 Claude)를 사용할 수 있습니다.
+개인의 과거 경험을 체계적으로 탐구하여 성장 스토리를 발굴하는 AI 대화형 웹 애플리케이션입니다.
 
-## 🚀 주요 기능
+## 📖 프로젝트 소개
 
-- **채팅 인터페이스**: 실시간 채팅 형태의 직관적인 UI
-- **텍스트 입력**: 키보드 입력 및 Enter 키 지원
-- **음성 입력**: 브라우저 음성 인식 기능 (Chrome 권장)
-- **AI 연동**: OpenAI GPT 또는 Claude API 지원
-- **반응형 디자인**: 모바일/데스크톱 호환
-- **세션 관리**: 대화 세션별 관리
-- **스토리텔링 AI**: 사용자의 인생 이야기를 듣고 성장 스토리로 만들어주는 전문 AI
+이 프로젝트는 **AI 기반 개인 성장 스토리 발굴 서비스**를 구현한 Spring Boot 웹 애플리케이션입니다. 전문적으로 설계된 프롬프트 엔지니어링을 통해 사용자의 과거 경험을 단계적으로 탐구하고, 이를 바탕으로 의미 있는 성장 내러티브를 구성하는 것이 핵심 기능입니다.
 
-## 🛠️ 설치 및 실행
+### 🎯 개발 목표
+- AI 대화형 인터페이스를 통한 개인 스토리 발굴
+- 텍스트와 음성 입력을 모두 지원하는 멀티모달 UX
+- 체계적인 질문 체계로 사용자 경험의 의미 도출
+- 개인의 핵심 역량과 성장 패턴 식별
 
-Spring Boot 백엔드가 프론트엔드 파일을 함께 제공하므로, 별도의 웹 서버가 필요 없습니다. 아래 단계에 따라 간단하게 전체 애플리케이션을 실행할 수 있습니다.
+## ⚡ 핵심 기능
 
-1.  **백엔드 디렉토리로 이동**
-    ```bash
-    cd backend
-    ```
+### 🤖 AI 대화 시스템
+- **Google Gemini API** 통합으로 자연스러운 대화 구현
+- **전문 프롬프트 설계**로 개인 성장 스토리에 특화된 질문 생성
+- **단계적 질문 체계**를 통한 점진적 경험 탐구
 
-2.  **Maven으로 의존성 설치 및 빌드**
-    ```bash
-    mvn clean install
-    ```
+### 🎙️ 멀티모달 입력
+- **텍스트 채팅**: 실시간 타이핑 인터페이스
+- **음성 인식**: Google Cloud Speech-to-Text API 활용
+- **반응형 UI**: 모던한 glassmorphism 디자인 적용
 
-3.  **API 키 환경 변수 설정 (필요시)**
-    - **OpenAI 사용 시:**
-      ```bash
-      # macOS/Linux
-      export OPENAI_API_KEY="sk-your-openai-key"
+### 💡 개인화된 경험
+- **맞춤형 후속 질문**: 사용자 답변에 기반한 적응형 대화
+- **핵심 역량 식별**: 문제해결력, 리더십, 창의성 등 강점 발굴
+- **성장 스토리 구성**: 파편적 경험의 통합적 내러티브 생성
 
-      # Windows
-      set OPENAI_API_KEY=sk-your-openai-key
-      ```
-    - **Claude 사용 시:**
-      ```bash
-      # macOS/Linux
-      export CLAUDE_API_KEY="sk-ant-your-claude-key"
+## 🏗️ 기술 아키텍처
 
-      # Windows
-      set CLAUDE_API_KEY=sk-ant-your-claude-key
-      ```
-    > **Note:** API 키를 설정하지 않으면 데모 모드로 실행됩니다.
+### 백엔드 (Spring Boot)
+- **Spring Boot 3.2.0** - REST API 서버 프레임워크
+- **Java 17** - 프로그래밍 언어
+- **Maven** - 빌드 도구 및 의존성 관리
 
-4.  **애플리케이션 실행**
-    ```bash
-    mvn spring-boot:run
-    ```
+### AI 통합
+- **Google Gemini API** - 대화형 AI 엔진
+- **Google Cloud Speech-to-Text** - 음성 인식 서비스
+- **커스텀 프롬프트 엔지니어링** - 성장 스토리 특화 대화 로직
 
-5.  **브라우저 접속**
-    애플리케이션이 실행되면, 웹 브라우저를 열고 아래 주소로 접속하세요.
-    - `http://localhost:8080`
+### 프론트엔드
+- **Vanilla JavaScript** - 클라이언트 사이드 기능
+- **HTML5/CSS3** - 구조 및 스타일링
+- **Web API** - 마이크 권한, 파일 업로드 등
+- **Glassmorphism UI** - 모던 디자인 시스템
 
-## 📁 프로젝트 구조
-
+### 프로젝트 구조
 ```
 DeepQuestion/
-├── index.html          # 메인 웹페이지
-├── styles.css          # 스타일시트
-├── script.js           # 프론트엔드 JavaScript
-├── CLAUDE.md           # 프로젝트 요구사항
-├── README.md           # 이 파일
-└── backend/            # Spring Boot 백엔드
-    ├── pom.xml
-    └── src/main/
-        ├── java/com/deepquestion/
-        │   ├── DeepQuestionApplication.java
-        │   ├── controller/ChatController.java
-        │   ├── service/ChatService.java
-        │   ├── config/WebConfig.java
-        │   └── dto/
-        │       ├── ChatRequest.java
-        │       ├── ChatResponse.java
-        │       ├── OpenAIRequest.java
-        │       ├── OpenAIResponse.java
-        │       ├── ClaudeRequest.java
-        │       └── ClaudeResponse.java
-        └── resources/
-            └── application.properties
+├── backend/                          # Spring Boot 애플리케이션
+│   ├── src/main/java/com/deepquestion/
+│   │   ├── DeepQuestionApplication.java    # 메인 애플리케이션
+│   │   ├── controller/ChatController.java  # REST API 컨트롤러
+│   │   ├── service/ChatService.java       # 비즈니스 로직
+│   │   └── dto/                           # 데이터 전송 객체
+│   ├── src/main/resources/
+│   │   ├── application.properties         # 설정 파일
+│   │   └── static/index.html             # 프론트엔드 UI
+│   └── pom.xml                           # Maven 설정
+└── README.md                             # 프로젝트 문서
 ```
 
-## ⚙️ 설정 방법
+## 🛠️ 실행 방법
 
-### AI API 설정
+### 필수 준비사항
+- **Java 17** 이상
+- **Maven 3.6** 이상  
+- **Google Gemini API 키** ([발급 방법](https://makersuite.google.com/app/apikey))
 
-`backend/src/main/resources/application.properties` 파일에서 AI 서비스를 설정할 수 있습니다:
-
-```properties
-# 사용할 AI 서비스 선택 (openai 또는 claude)
-ai.service=openai
-
-# OpenAI 설정
-ai.openai.api-key=${OPENAI_API_KEY:your-openai-api-key-here}
-ai.openai.model=gpt-3.5-turbo
-ai.openai.max-tokens=1000
-ai.openai.temperature=0.7
-
-# Claude 설정  
-ai.claude.api-key=${CLAUDE_API_KEY:your-claude-api-key-here}
-ai.claude.model=claude-3-sonnet-20240229
-ai.claude.max-tokens=1000
-
-# 시스템 프롬프트 커스터마이즈
-ai.system-prompt=당신은 DeepQuestion AI입니다...
-```
-
-### 환경 변수 설정
-
-실제 AI API를 사용하려면 환경 변수로 API 키를 설정해야 합니다:
-
+### 1. 환경 설정
 ```bash
-# macOS/Linux
-export OPENAI_API_KEY="sk-your-openai-key"
-export CLAUDE_API_KEY="sk-ant-your-claude-key"
+# 저장소 클론
+git clone <repository-url>
+cd DeepQuestion
 
-# Windows
-set OPENAI_API_KEY=sk-your-openai-key
-set CLAUDE_API_KEY=sk-ant-your-claude-key
+# 환경변수 설정
+cp .env.example .env
+# .env 파일에서 GEMINI_API_KEY 값 수정
 ```
 
-## 🎯 사용법
-
-1. **애플리케이션 실행**: `backend` 디렉토리에서 `mvn spring-boot:run` 명령을 실행합니다.
-2. **브라우저 접속**: `http://localhost:8080` 주소로 접속합니다.
-3. **채팅 시작**: 텍스트를 입력하거나 🎤 버튼을 눌러 음성으로 대화를 시작합니다.
-
-## 🔧 개발 모드
-
-API 키가 설정되지 않았거나 백엔드 서버가 실행되지 않은 경우, 프론트엔드는 자동으로 데모 모드로 전환되어 시뮬레이션된 응답을 제공합니다.
-
-## 📋 API 엔드포인트
-
-### POST /api/chat/message
-채팅 메시지 처리
-
-**Request:**
-```json
-{
-  "message": "안녕하세요",
-  "sessionId": "session-123"
-}
+### 2. 실행
+```bash
+cd backend
+mvn clean package
+java -jar target/deep-question-1.0.0.jar
 ```
 
-**Response:**
-```json
-{
-  "message": "안녕하세요! 무엇을 도와드릴까요?",
-  "sessionId": "session-123",
-  "timestamp": "2024-01-01T10:00:00",
-  "success": true,
-  "error": null
-}
+### 3. 접속
+브라우저에서 `http://localhost:8080` 접속
+
+## 💡 주요 구현 사항
+
+### API 엔드포인트
+- **POST /api/chat** - 텍스트 채팅
+- **POST /api/chat/voice** - 음성 채팅 (multipart/form-data)
+
+### 보안 설정
+- API 키 환경변수 관리
+- 민감한 프롬프트 정보 외부화
+- CORS 정책 적용
+
+### 기능 특징
+- **단계적 질문 체계**: 쉬운 질문부터 심화 질문으로 진행
+- **역량 중심 분석**: 문제해결력, 리더십, 창의성 등 강점 발굴
+- **적응형 대화**: 사용자 답변에 기반한 맞춤형 후속 질문
+
+## ⭐ 프로젝트 특징
+
+### 개발 의도
+이 프로젝트는 **AI 프롬프트 엔지니어링**과 **대화형 UX 설계**에 중점을 둔 실험적 프로젝트입니다. 단순한 채팅봇을 넘어서, 특정 도메인(개인 성장 스토리)에 특화된 AI 대화 시스템을 구현했습니다.
+
+### 기술적 도전
+- **프롬프트 엔지니어링**: 체계적인 질문 프레임워크 설계
+- **멀티모달 인터페이스**: 텍스트/음성 입력의 통합 처리
+- **적응형 대화 로직**: 사용자 응답에 따른 동적 질문 생성
+- **RESTful API 설계**: 확장 가능한 백엔드 아키텍처
+
+### 학습 성과
+- Spring Boot 3.x 기반 웹 애플리케이션 개발
+- Google Cloud API 통합 (Gemini, Speech-to-Text)
+- 프론트엔드-백엔드 연동 및 비동기 통신
+- 환경변수 관리 및 보안 설정
+- Maven 빌드 시스템 활용
+
+---
+
+## 🔧 개발 환경 설정
+
+### 로컬 개발
+```bash
+# 개발 서버 실행
+cd backend
+mvn spring-boot:run
+
+# 또는 IDE에서 DeepQuestionApplication.java 실행
 ```
 
-### GET /api/chat/health
-서비스 상태 확인
+### 빌드 및 패키징
+```bash
+mvn clean package -DskipTests
+java -jar target/deep-question-1.0.0.jar
+```
 
-### GET /api/chat/status
-서비스 실행 상태 확인
+---
 
-## 🐛 문제 해결
-
-### 음성 인식이 작동하지 않는 경우
-- Chrome 브라우저 사용 권장
-- HTTPS 환경에서 테스트 (localhost는 HTTP도 가능)
-- 마이크 권한 허용 확인
-
-### 백엔드 연결 실패
-- 백엔드 서버가 8080 포트에서 실행 중인지 확인
-- CORS 오류 시 WebConfig 설정 확인
-- 콘솔에서 네트워크 오류 메시지 확인
-
-### AI API 오류
-- API 키가 올바르게 설정되었는지 확인
-- API 사용량 한도 확인
-- 네트워크 연결 상태 확인
-
-## 🏗 기술 스택
-
-**Frontend:**
-- HTML5, CSS3, Vanilla JavaScript
-- Web Speech API (음성 인식)
-- Fetch API (HTTP 통신)
-
-**Backend:**
-- Spring Boot 3.2.0
-- Java 17
-- Spring WebFlux (비동기 HTTP 클라이언트)
-- Maven
-
-**AI APIs:**
-- OpenAI GPT-3.5/4
-- Anthropic Claude 3
-
-## 📄 라이센스
-
-이 프로젝트는 개인 프로젝트용으로 제작되었습니다.
+**📝 Portfolio Project** - AI 대화 시스템과 웹 풀스택 개발 역량을 보여주는 프로젝트입니다.
