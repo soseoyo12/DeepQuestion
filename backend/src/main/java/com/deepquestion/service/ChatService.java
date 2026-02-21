@@ -25,7 +25,7 @@ public class ChatService {
     private final WebClient webClient;
     private final String geminiApiKey;
     private final String geminiApiUrl;
-    // 시스템 기본 프rompt (application.properties에서 설정)
+    // 시스템 기본 프롬프트 (application.properties에서 설정)
     private final String systemPrompt;
     
     public ChatService(@Value("${gemini.api.key}") String geminiApiKey,
